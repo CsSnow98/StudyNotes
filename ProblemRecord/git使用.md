@@ -45,6 +45,97 @@ Git的版本库里存了很多东西，其中最重要的就是称为`stage`（�
 场景3：已经提交了不合适的修改到版本库时，想要撤销本次提交，参考版本回退一节，不过前提是没有推送到远程库。
 ## 删除文件
 命令`git rm`用于删除一个文件。如果一个文件已经被提交到版本库，那么你永远不用担心误删，但是要小心，你只能恢复文件到最新版本，你会丢失最近一次提交后你修改的内容。
+***
+# 远程仓库
+在GitHub上创建项目或者自己搭建Git服务器。
+## 添加远程库
+要关联一个远程库，使用命令`git remote add origin git@server-name:path/repo-name.git`；
+
+关联一个远程库时必须给远程库指定一个名字，`origin`是默认习惯命名；
+
+关联后，使用命令`git push -u origin master`第一次推送`master`分支的所有内容；
+
+此后，每次本地提交后，只要有必要，就可以使用命令`git push origin master`推送最新修改；
+
+分布式版本系统的最大好处之一是在本地工作完全不需要考虑远程库的存在，也就是有没有联网都可以正常工作，而`SVN`在没有联网的时候是拒绝干活的！当有网络的时候，再把本地提交推送一下就完成了同步，真是太方便了！
+## 克隆远程库
+要克隆一个仓库，首先必须知道仓库的地址，然后使用`git clone`命令克隆。
+`$ git clone git@github.com:michaelliao/gitskills.git`
+`Git`支持多种协议，包括`https`，但`ssh`协议速度最快。
+***
+
+# 分支管理
+## 创建和合并分支
+Git鼓励大量使用分支：
+
+查看分支：`git branch`
+
+创建分支：`git branch <name>`
+
+切换分支：`git checkout <name>`或者`git switch <name>`
+
+创建+切换分支：`git checkout -b <name>`或者`git switch -c <name>`
+
+合并某分支到当前分支：`git merge <name>`
+
+删除分支：`git branch -d <name>`
+## 合并分支
+当Git无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。
+
+解决冲突就是把Git合并失败的文件手动编辑为我们希望的内容，再提交。
+用`git log --graph`命令可以看到分支合并图。
+## 分支管理策略
+Git分支十分强大，在团队开发中应该充分应用。
+
+合并分支时，加上`--no-f`f参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，而`fast forward`合并就看不出来曾经做过合并。
+`$ git merge --no-ff -m "merge with no-ff" dev`
+## Feature分支
+开发一个新`feature`，最好新建一个分支；
+
+如果要丢弃一个没有被合并过的分支，可以通过`git branch -D <name>`强行删除。
+## 多人协作
+因此，多人协作的工作模式通常是这样：
+
+首先，可以试图用`git push origin <branch-name>`推送自己的修改；
+
+如果推送失败，则因为远程分支比你的本地更新，需要先用`git pull`试图合并；
+
+如果合并有冲突，则解决冲突，并在本地提交；
+
+没有冲突或者解决掉冲突后，再用`git push origin <branch-name>`推送就能成功！
+
+如果`git pull`提示`no tracking information`，则说明本地分支和远程分支的链接关系没有创建，用命令`git branch --set-upstream-to <branch-name> origin/<branch-name>`。
+
+这就是多人协作的工作模式，一旦熟悉了，就非常简单。
+
+查看远程库信息，使用`git remote -v`；
+
+本地新建的分支如果不推送到远程，对其他人就是不可见的；
+
+从本地推送分支，使用`git push origin branch-name`，如果推送失败，先用`git pull`抓取远程的新提交；
+
+在本地创建和远程分支对应的分支，使用`git checkout -b branch-name origin/branch-name`，本地和远程分支的名称最好一致；
+
+建立本地分支和远程分支的关联，使用`git branch --set-upstream branch-name origin/branch-name`；
+
+从远程抓取分支，使用`git pull`，如果有冲突，要先处理冲突。
+***
+# 标签管理
+## 创建标签
+命令`git tag <tagname>`用于新建一个标签，默认为`HEAD`，也可以指定一个`commit id`；
+
+命令`git tag -a <tagname> -m "blablabla..."`可以指定标签信息；
+
+命令`git tag`可以查看所有标签。
+## 操作标签
+命令`git push origin <tagname>`可以推送一个本地标签；
+
+命令`git push origin --tags`可以推送全部未推送过的本地标签；
+
+命令`git tag -d <tagname>`可以删除一个本地标签；
+
+命令`git push origin :refs/tags/<tagname>`可以删除一个远程标签。
+
 
 # 小结
 ## 把本地项目传输至远程的流程
