@@ -152,3 +152,8 @@ Git分支十分强大，在团队开发中应该充分应用。
 5、最后通过`git push -u origin master`把本地仓库的项目推送到远程仓库（也就是Github）上；（若新建远程仓库的时候自动创建了README文件会报错，解决办法看上面）。
 
 ---
+
+开启代理：  
+`git config --local http.proxy 'socks5://127.0.0.1:10808'`  
+关闭代理：  
+`git config --local --unset  http.proxy`
